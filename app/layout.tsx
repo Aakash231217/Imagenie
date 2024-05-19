@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 import "./globals.css";
 
@@ -22,14 +22,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{
-      variables: { colorPrimary: '#624cf5' }
-    }}>
-      <html lang="en">
-        <body className={cn("font-IBMPlex antialiased", IBMPlex.variable)}>
+    <ClerkProvider>
+    <html lang="en">
+      <body>
+        <header>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </header>
+        <main>
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </main>
+      </body>
+    </html>
+  </ClerkProvider>
   );
 }
