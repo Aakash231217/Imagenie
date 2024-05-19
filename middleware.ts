@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export default async function middleware(req: NextRequest) {
-  console.log('Middleware executed');
-  return clerkMiddleware()(req);
-}
+// Define which routes to protect
+const isProtectedRoute = createRouteMatcher(["/", "/credits(.*)"]);
+
+export default clerkMiddleware((auth, req) => {
+  if (isProtectedRoute(req)) {
+    auth().protect();
+  }
+});
 
 export const config = {
-  matcher: ["/((?!.*\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
